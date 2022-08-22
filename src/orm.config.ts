@@ -16,7 +16,7 @@ export const config: TypeOrmModuleOptions = {
   username: 'root',
   password: 'root',
   host: 'localhost',
-  database: 'puregram_db',
+  database: 'casino_db',
   type: 'mysql',
   synchronize: true,
   entities: ['dist/**/*.entity{.ts,.js}'],
