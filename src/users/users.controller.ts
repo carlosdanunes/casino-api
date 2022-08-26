@@ -19,8 +19,8 @@ export class UserController {
   @ApiTags('Users')
   @ApiOperation({ summary: 'Get all users' })
   @Get()
-  async getAllUsers() {
-    return await this.userService.getUsers();
+  async getAllUsers(@Body() body: { cursor: number; take: number }) {
+    return await this.userService.getUsers(body.cursor, body.take);
   }
 
   @ApiTags('Users')

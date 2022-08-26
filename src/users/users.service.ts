@@ -27,8 +27,13 @@ export class UserService {
     return res;
   }
 
-  async getUsers() {
-    return await this.usersRepository.find();
+  async getUsers(cursor: number, take: number) {
+    const res = await this.usersRepository.find({
+      order: { created_at: 'DESC' },
+      take: take,
+      skip: cursor,
+    });
+    return res;
   }
 
   async getSingleUser(userId: string) {
