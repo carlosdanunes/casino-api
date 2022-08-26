@@ -23,6 +23,7 @@ export class UserService {
       email,
       password: hashedPassword,
       avatarUrl: '',
+      role: 'user',
     });
     return res;
   }

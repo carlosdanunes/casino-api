@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Observable } from 'rxjs';
 import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 
@@ -58,5 +59,26 @@ export class UserExistGuard implements CanActivate {
       throw new ForbiddenException('User with this email already exists');
     }
     return true;
+  }
+}
+
+@Injectable()
+export class UserAdminGuard implements CanActivate {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  async canActivate(context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest();
+    const user = await this.usersRepository.findOne({
+      where: { email: req.body.email },
+    });
+
+    if (user.role === 'admin') {
+      return true;
+    } else {
+      throw new ForbiddenException('User is not an admin');
+    }
   }
 }

@@ -1,22 +1,16 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('article')
+export class Article {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 50 })
-  username: string;
+  label: string;
 
   @Column({ type: 'varchar', length: 50, unique: true })
-  email: string;
-
-  @Column({ type: 'varchar', length: 200 })
-  password: string;
+  text: string;
 
   @Column({ type: 'varchar', length: 1000 })
-  avatarUrl: string;
-
-  @Column({ type: 'varchar', length: 10 })
-  role: string;
+  imageUrl: string;
 }
