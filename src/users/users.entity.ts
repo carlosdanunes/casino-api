@@ -22,6 +22,9 @@ export class User {
   @Column({ type: 'varchar', length: 1000 })
   avatarUrl: string;
 
+  @Column({ type: 'varchar', length: 10 })
+  role: string;
+
   @CreateDateColumn()
   created_at: Date;
 }

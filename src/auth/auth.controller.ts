@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserExistGuard } from '../users/users.guard';
+import { UserExistGuard, UserAdminGuard } from '../users/users.guard';
 import { RegisterDto, LoginDto, ForgotPasswordDto } from './auth.dto';
 import { UserService } from 'src/users/users.service';
 
@@ -42,5 +42,14 @@ export class AuthController {
   @Post('/forgotPassword')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.resetPassword(forgotPasswordDto);
+  }
+
+  @ApiTags('Auth')
+  @ApiOperation({ summary: 'Login Admin' })
+  @Public()
+  @UseGuards(UserAdminGuard)
+  @Post('/login/admin')
+  async loginAdmin(@Body() loginDto: LoginDto) {
+    return this.authService.validateUser(loginDto.email, loginDto.password);
   }
 }
