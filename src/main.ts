@@ -11,6 +11,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Binobi')
     .build();
+  console.log('process.env.DATABASE_USER', process.env.DATABASE_USER);
   app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, options);
   app.enableCors();

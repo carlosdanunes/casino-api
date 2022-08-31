@@ -12,12 +12,4 @@ export const config: TypeOrmModuleOptions = {
   // type: 'postgres',
   // synchronize: true,
   // entities: ['dist/**/*.entity{.ts,.js}'],
-  port: 3306,
-  username: 'root',
-  password: 'mark1337',
-  host: 'localhost',
-  database: 'casino_db',
-  type: 'mysql',
-  synchronize: true,
-  entities: ['dist/**/*.entity{.ts,.js}'],
 };
