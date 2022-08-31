@@ -15,6 +15,9 @@ import { ConfigModule } from '@nestjs/config';
     ArticleModule,
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
+        ssl: {
+          rejectUnauthorized: false,
+        },
         username: process.env.TYPEORM_USERNAME,
         password: process.env.TYPEORM_PASSWORD,
         port: Number(process.env.TYPEORM_PORT),
