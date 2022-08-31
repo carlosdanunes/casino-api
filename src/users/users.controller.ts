@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './users.dto';
@@ -18,9 +19,16 @@ export class UserController {
 
   @ApiTags('Users')
   @ApiOperation({ summary: 'Get all users' })
-  @Get()
+  @Post()
   async getAllUsers(@Body() body: { cursor: number; take: number }) {
     return await this.userService.getUsers(body.cursor, body.take);
+  }
+
+  @ApiTags('Users')
+  @ApiOperation({ summary: 'Get users count' })
+  @Get('/count')
+  async getUsersCount() {
+    return await this.userService.getUsersCount();
   }
 
   @ApiTags('Users')

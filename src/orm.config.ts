@@ -14,7 +14,7 @@ export const config: TypeOrmModuleOptions = {
   // entities: ['dist/**/*.entity{.ts,.js}'],
   port: 3306,
   username: 'root',
-  password: 'root',
+  password: 'mark1337',
   host: 'localhost',
   database: 'casino_db',
   type: 'mysql',
