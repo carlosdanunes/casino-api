@@ -13,12 +13,17 @@ import { ArticleService } from './article.service';
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
-  @Get()
-  async getArticles() {
-    return await this.articleService.getArticles();
+  @Post()
+  async getArticles(@Body() body: { cursor: number; take: number }) {
+    return await this.articleService.getArticles(body.cursor, body.take);
   }
 
-  @Post()
+  @Get('/count')
+  async getArticlesCount() {
+    return await this.articleService.getArticlesCount();
+  }
+
+  @Post('/add')
   async addArticle(@Body() addArticleDto: AddArticleDto) {
     return await this.articleService.addArticle(
       addArticleDto.label,

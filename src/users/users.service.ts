@@ -46,7 +46,6 @@ export class UserService {
 
   async getUsersCount() {
     const res = await this.usersRepository.count();
-    console.log(res);
     return res;
   }
 

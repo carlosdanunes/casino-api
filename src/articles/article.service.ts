@@ -11,9 +11,18 @@ export class ArticleService {
     private articleRepository: Repository<Article>,
   ) {}
 
-  async getArticles() {
-    const res = await this.articleRepository.find();
+  async getArticles(cursor: number, take: number) {
+    const res = await this.articleRepository.find({
+      order: { created_at: 'DESC' },
+      take: take,
+      skip: cursor,
+    });
     console.log(res);
+    return res;
+  }
+
+  async getArticlesCount() {
+    const res = await this.articleRepository.count();
     return res;
   }
 
