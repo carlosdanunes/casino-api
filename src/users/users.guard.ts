@@ -5,7 +5,6 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Observable } from 'rxjs';
 import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 
@@ -74,6 +73,10 @@ export class UserAdminGuard implements CanActivate {
     const user = await this.usersRepository.findOne({
       where: { email: req.body.email },
     });
+
+    if (!user) {
+      throw new ForbiddenException('User with this email not exists');
+    }
 
     if (user.role === 'admin') {
       return true;

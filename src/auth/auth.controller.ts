@@ -2,7 +2,11 @@ import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserExistGuard, UserAdminGuard } from '../users/users.guard';
+import {
+  UserExistGuard,
+  UserAdminGuard,
+  UserNotExistsGuard,
+} from '../users/users.guard';
 import { RegisterDto, LoginDto, ForgotPasswordDto } from './auth.dto';
 import { UserService } from 'src/users/users.service';
 
