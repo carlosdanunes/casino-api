@@ -1,6 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as admin from 'firebase-admin';
 import { Repository } from 'typeorm';
+import { uuid } from 'uuidv4';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
 
@@ -26,11 +28,13 @@ export class ArticleService {
     return res;
   }
 
-  async addArticle(label, text, imageUrl) {
+  async addArticle(title, text, subtitle, image: Express.Multer.File) {
+    const url = await this.uploadFile(image);
     const res = await this.articleRepository.save({
-      label,
+      title,
       text,
-      imageUrl,
+      subtitle,
+      imageUrl: url,
     });
     return res;
   }
@@ -59,5 +63,29 @@ export class ArticleService {
     return {
       ...res,
     };
+  }
+
+  async uploadFile(file) {
+    const bucket = admin.storage().bucket();
+    console.log('file', file);
+
+    const filename = file.originalname;
+
+    // Uploads a local file to the bucket
+    await bucket
+      .file(filename)
+      .save(file.buffer)
+      .then((res) => console.log(res));
+    const bucketFile = bucket.file(filename);
+    console.log('uploaded');
+
+    const urls = await bucketFile.getSignedUrl({
+      action: 'read',
+      expires: '03-09-2491',
+    });
+
+    console.log(`${filename} uploaded.`);
+
+    return urls[0];
   }
 }

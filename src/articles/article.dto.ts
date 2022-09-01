@@ -5,14 +5,14 @@ export class AddArticleDto {
   @IsNotEmpty()
   @ApiProperty({
     type: 'string',
-    description: 'label',
+    description: 'title',
     required: true,
   })
-  label: string;
+  title: string;
 
   @IsNotEmpty()
   @ApiProperty({
-    type: 'string',
+    type: 'text',
     description: 'text',
     required: true,
   })
@@ -20,11 +20,11 @@ export class AddArticleDto {
 
   @IsNotEmpty()
   @ApiProperty({
-    type: 'string',
-    description: 'image',
+    type: 'text',
+    description: 'text',
     required: true,
   })
-  imageUrl: string;
+  subtitle: string;
 }
 
 export class UpdateArticleDto {
