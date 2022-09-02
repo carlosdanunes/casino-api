@@ -40,6 +40,7 @@ export class ArticleController {
     @UploadedFile() image: Express.Multer.File,
     @Body() addArticleDto: AddArticleDto,
   ) {
+    console.log('image', image);
     return await this.articleService.addArticle(
       addArticleDto.title,
       addArticleDto.text,

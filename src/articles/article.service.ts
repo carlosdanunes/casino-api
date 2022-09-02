@@ -35,6 +35,8 @@ export class ArticleService {
       text,
       subtitle,
       imageUrl: url,
+      likesCount: 0,
+      viewsCount: 0,
     });
     return res;
   }
