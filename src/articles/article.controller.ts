@@ -40,7 +40,6 @@ export class ArticleController {
     @UploadedFile() image: Express.Multer.File,
     @Body() addArticleDto: AddArticleDto,
   ) {
-    console.log('image', image);
     return await this.articleService.addArticle(
       addArticleDto.title,
       addArticleDto.text,
@@ -58,12 +57,18 @@ export class ArticleController {
 
   @ApiTags('Article')
   @ApiOperation({ summary: 'Update article by id' })
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
   async updateArticle(
     @Param('id') articleId: string,
     @Body() updateArticleDto: UpdateArticleDto,
+    @UploadedFile() image?: Express.Multer.File,
   ) {
-    return await this.articleService.updateArticle(articleId, updateArticleDto);
+    return await this.articleService.updateArticle(
+      articleId,
+      updateArticleDto,
+      image,
+    );
   }
 
   @ApiTags('Article')

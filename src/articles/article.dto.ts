@@ -22,27 +22,21 @@ export class AddArticleDto {
 }
 
 export class UpdateArticleDto {
-  @IsNotEmpty()
   @ApiProperty({
     type: 'string',
-    description: 'label',
-    required: false,
+    description: 'title',
   })
-  label: string;
+  title: string;
 
-  @IsNotEmpty()
   @ApiProperty({
-    type: 'string',
+    type: 'text',
     description: 'text',
-    required: false,
   })
   text: string;
 
-  @IsNotEmpty()
   @ApiProperty({
-    type: 'string',
-    description: 'image',
-    required: false,
+    type: 'text',
+    description: 'text',
   })
-  imageUrl: string;
+  subtitle: string;
 }

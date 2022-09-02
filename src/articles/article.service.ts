@@ -46,13 +46,22 @@ export class ArticleService {
     return articleId;
   }
 
-  async updateArticle(articleId: string, articleData: UpdateArticleDto) {
+  async updateArticle(
+    articleId: string,
+    articleData: UpdateArticleDto,
+    image: Express.Multer.File,
+  ) {
+    let url = null;
     const article = await this.articleRepository.findOne({
       where: { id: articleId },
     });
+    if (image) {
+      url = await this.uploadFile(image);
+    }
     return await this.articleRepository.save({
       ...article,
       ...articleData,
+      imageUrl: url ? url : article.imageUrl,
     });
   }
 
