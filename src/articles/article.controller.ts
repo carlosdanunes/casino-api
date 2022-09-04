@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 import { AddArticleDto, UpdateArticleDto } from './article.dto';
 import { ArticleService } from './article.service';
 
@@ -20,6 +21,7 @@ export class ArticleController {
 
   @ApiTags('Article')
   @ApiOperation({ summary: 'Get articles' })
+  @Public()
   @Post()
   async getArticles(@Body() body: { cursor: number; take: number }) {
     return await this.articleService.getArticles(body.cursor, body.take);
@@ -27,6 +29,7 @@ export class ArticleController {
 
   @ApiTags('Article')
   @ApiOperation({ summary: 'Get articles count' })
+  @Public()
   @Get('/count')
   async getArticlesCount() {
     return await this.articleService.getArticlesCount();
@@ -73,6 +76,7 @@ export class ArticleController {
 
   @ApiTags('Article')
   @ApiOperation({ summary: 'Get single article by id' })
+  @Public()
   @Get(':id')
   async getSingleArticleById(@Param('id') articleId: string) {
     return await this.articleService.getSingleArticleById(articleId);
