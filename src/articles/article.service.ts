@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as admin from 'firebase-admin';
+import { Category } from 'src/category/category.entity';
+import { CategoryToArticle } from 'src/categoryToArticle/categoryToArticle.entity';
 import { Repository } from 'typeorm';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
@@ -10,6 +12,10 @@ export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
+    @InjectRepository(CategoryToArticle)
+    private categoriesToArticleRepository: Repository<CategoryToArticle>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
   ) {}
 
   async getArticles(cursor: number, take: number) {
@@ -18,8 +24,27 @@ export class ArticleService {
       take: take,
       skip: cursor,
     });
-    console.log(res);
-    return res;
+    const categoriesIds = Promise.all(
+      res.map(async (article) => {
+        const categoryToArticle =
+          await this.categoriesToArticleRepository.findOne({
+            where: { categoryId: article.categoryId },
+          });
+        if (categoryToArticle) {
+          console.log('categoryId', categoryToArticle);
+          const category = await this.categoriesRepository.findOne({
+            where: { id: categoryToArticle.categoryId },
+          });
+          return {
+            ...article,
+            categoryId: category.id,
+            categoryName: category.name,
+          };
+        }
+        return article;
+      }),
+    );
+    return categoriesIds;
   }
 
   async getArticlesCount() {
@@ -31,10 +56,11 @@ export class ArticleService {
     title,
     text,
     subtitle,
-    categoryIds,
+    categoryId,
     image: Express.Multer.File,
   ) {
     const url = await this.uploadFile(image);
+
     const res = await this.articleRepository.save({
       title,
       text,
@@ -42,6 +68,13 @@ export class ArticleService {
       imageUrl: url,
       likesCount: 0,
       viewsCount: 0,
+      categoryId: categoryId,
+    });
+    await this.categoriesToArticleRepository.save({
+      category: categoryId,
+      categoryId: categoryId,
+      article: res,
+      articleId: res.id,
     });
     return res;
   }

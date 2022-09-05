@@ -1,6 +1,7 @@
 import { Article } from 'src/articles/article.entity';
 import { Category } from 'src/category/category.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -14,6 +15,12 @@ import {
 export class CategoryToArticle {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ name: 'articleId' })
+  articleId: string;
+
+  @Column({ name: 'categoryId' })
+  categoryId: string;
 
   @ManyToOne(() => Category, (category) => category.id)
   @JoinColumn({ name: 'categoryId' })

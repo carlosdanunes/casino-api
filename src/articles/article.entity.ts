@@ -38,6 +38,9 @@ export class Article {
   @Column({ type: 'int' })
   viewsCount: number;
 
+  @Column({ name: 'categoryId' })
+  categoryId: string;
+
   @OneToMany(() => CategoryToArticle, (category) => category.category)
   @JoinColumn({ name: 'categoryId' })
   category: CategoryToArticle;

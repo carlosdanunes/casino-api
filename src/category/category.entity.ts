@@ -17,6 +17,9 @@ export class Category {
   @Column({ type: 'varchar', length: 50 })
   name: string;
 
+  @Column({ name: 'articleId' })
+  articleId: string;
+
   @OneToMany(() => CategoryToArticle, (category) => category.article)
   @JoinColumn({ name: 'articleId' })
   article: CategoryToArticle;
