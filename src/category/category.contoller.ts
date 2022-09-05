@@ -20,7 +20,7 @@ export class CategoryController {
   @ApiOperation({ summary: 'Get category' })
   @Public()
   @Get()
-  async getArticles() {
+  async getCategories() {
     return await this.categoryService.getCategories();
   }
 
