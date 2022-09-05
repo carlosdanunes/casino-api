@@ -1,7 +1,10 @@
+import { CategoryToArticle } from 'src/categoryToArticle/categoryToArticle.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,4 +37,8 @@ export class Article {
 
   @Column({ type: 'int' })
   viewsCount: number;
+
+  @OneToMany(() => CategoryToArticle, (category) => category.category)
+  @JoinColumn({ name: 'categoryId' })
+  category: CategoryToArticle;
 }

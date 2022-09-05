@@ -19,6 +19,12 @@ export class AddArticleDto {
     description: 'text',
   })
   subtitle: string;
+
+  @ApiProperty({
+    type: 'string',
+    description: 'array of ids',
+  })
+  categoryId: string;
 }
 
 export class UpdateArticleDto {

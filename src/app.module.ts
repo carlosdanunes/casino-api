@@ -7,12 +7,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ArticleModule } from './articles/article.module';
 import { ConfigModule } from '@nestjs/config';
+import { CategoryModule } from 'src/category/category.module';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     ArticleModule,
+    CategoryModule,
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         ssl: {

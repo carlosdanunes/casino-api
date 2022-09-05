@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as admin from 'firebase-admin';
 import { Repository } from 'typeorm';
-import { uuid } from 'uuidv4';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
 
@@ -28,7 +27,13 @@ export class ArticleService {
     return res;
   }
 
-  async addArticle(title, text, subtitle, image: Express.Multer.File) {
+  async addArticle(
+    title,
+    text,
+    subtitle,
+    categoryIds,
+    image: Express.Multer.File,
+  ) {
     const url = await this.uploadFile(image);
     const res = await this.articleRepository.save({
       title,

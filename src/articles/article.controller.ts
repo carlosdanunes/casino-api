@@ -49,6 +49,7 @@ export class ArticleController {
       addArticleDto.title,
       addArticleDto.text,
       addArticleDto.subtitle,
+      addArticleDto.categoryId,
       image,
     );
   }
