@@ -12,6 +12,7 @@ import { UserService } from './users.service';
 import { UpdateUserDto } from './users.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { UserNotExistsGuard } from './users.guard';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('users')
 export class UserController {
@@ -37,6 +38,14 @@ export class UserController {
   @Get(':id')
   async getUser(@Param('id') userId: string) {
     return await this.userService.getSingleUser(userId);
+  }
+
+  @ApiTags('Users')
+  @Public()
+  @ApiOperation({ summary: `Get single user by username` })
+  @Get('/username/:username')
+  async getUserByUsername(@Param('username') username: string) {
+    return await this.userService.getSingleUserByUsername(username);
   }
 
   @ApiTags('Users')

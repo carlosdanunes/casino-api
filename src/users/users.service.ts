@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
@@ -39,6 +39,18 @@ export class UserService {
 
   async getSingleUser(userId: string) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
+    return {
+      ...user,
+    };
+  }
+
+  async getSingleUserByUsername(username: string) {
+    const user = await this.usersRepository.findOne({
+      where: { username: username },
+    });
+    if (!user) {
+      throw new ForbiddenException(`User not found`);
+    }
     return {
       ...user,
     };
