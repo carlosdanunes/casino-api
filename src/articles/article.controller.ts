@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 import { AddArticleDto, UpdateArticleDto } from './article.dto';
 import { ArticleService } from './article.service';
 
@@ -19,6 +20,7 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @ApiTags('Article')
+  @Public()
   @ApiOperation({ summary: 'Get articles' })
   @Post()
   async getArticles(@Body() body: { cursor: number; take: number }) {
@@ -26,6 +28,7 @@ export class ArticleController {
   }
 
   @ApiTags('Article')
+  @Public()
   @ApiOperation({ summary: 'Get articles count' })
   @Get('/count')
   async getArticlesCount() {

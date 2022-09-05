@@ -22,7 +22,7 @@ export class AuthController {
   @Public()
   @Post('/login')
   loginUser(@Body() loginDto: LoginDto) {
-    return this.authService.validateUser(loginDto.email, loginDto.password);
+    return this.authService.validateUser(loginDto.login, loginDto.password);
   }
 
   @ApiTags('Auth')
@@ -53,6 +53,6 @@ export class AuthController {
   @UseGuards(UserAdminGuard)
   @Post('/login/admin')
   async loginAdmin(@Body() loginDto: LoginDto) {
-    return this.authService.validateUser(loginDto.email, loginDto.password);
+    return this.authService.validateUser(loginDto.login, loginDto.password);
   }
 }
