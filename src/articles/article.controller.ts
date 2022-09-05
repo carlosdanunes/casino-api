@@ -22,6 +22,7 @@ export class ArticleController {
   @ApiTags('Article')
   @Public()
   @ApiOperation({ summary: 'Get articles' })
+  @Public()
   @Post()
   async getArticles(@Body() body: { cursor: number; take: number }) {
     return await this.articleService.getArticles(body.cursor, body.take);
@@ -30,6 +31,7 @@ export class ArticleController {
   @ApiTags('Article')
   @Public()
   @ApiOperation({ summary: 'Get articles count' })
+  @Public()
   @Get('/count')
   async getArticlesCount() {
     return await this.articleService.getArticlesCount();
@@ -76,6 +78,7 @@ export class ArticleController {
 
   @ApiTags('Article')
   @ApiOperation({ summary: 'Get single article by id' })
+  @Public()
   @Get(':id')
   async getSingleArticleById(@Param('id') articleId: string) {
     return await this.articleService.getSingleArticleById(articleId);
