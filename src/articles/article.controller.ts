@@ -24,8 +24,14 @@ export class ArticleController {
   @ApiOperation({ summary: 'Get articles' })
   @Public()
   @Post()
-  async getArticles(@Body() body: { cursor: number; take: number }) {
-    return await this.articleService.getArticles(body.cursor, body.take);
+  async getArticles(
+    @Body() body: { cursor: number; take: number; category?: string },
+  ) {
+    return await this.articleService.getArticles(
+      body.cursor,
+      body.take,
+      body.category,
+    );
   }
 
   @ApiTags('Article')

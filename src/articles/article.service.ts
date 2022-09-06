@@ -18,12 +18,23 @@ export class ArticleService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  async getArticles(cursor: number, take: number) {
-    const res = await this.articleRepository.find({
-      order: { created_at: 'DESC' },
-      take: take,
-      skip: cursor,
-    });
+  async getArticles(cursor: number, take: number, category?: string) {
+    const res = await this.articleRepository.find(
+      category
+        ? {
+            order: { created_at: 'DESC' },
+            take: take,
+            skip: cursor,
+          }
+        : {
+            order: { created_at: 'DESC' },
+            take: take,
+            skip: cursor,
+            where: {
+              categoryId: category,
+            },
+          },
+    );
     const categoriesIds = Promise.all(
       res.map(async (article) => {
         const categoryToArticle =
