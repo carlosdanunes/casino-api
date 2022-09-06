@@ -96,6 +96,13 @@ export class ArticleService {
     if (image) {
       url = await this.uploadFile(image);
     }
+    if (articleData.categoryId) {
+      await this.categoriesToArticleRepository.save({
+        categoryId: articleData.categoryId,
+        article: article,
+        articleId: articleId,
+      });
+    }
     return await this.articleRepository.save({
       ...article,
       ...articleData,
