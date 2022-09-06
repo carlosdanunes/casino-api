@@ -20,7 +20,7 @@ export class ArticleService {
 
   async getArticles(cursor: number, take: number, category?: string) {
     const res = await this.articleRepository.find(
-      category
+      !category
         ? {
             order: { created_at: 'DESC' },
             take: take,
