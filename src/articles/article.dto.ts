@@ -45,4 +45,10 @@ export class UpdateArticleDto {
     description: 'text',
   })
   subtitle: string;
+
+  @ApiProperty({
+    type: 'string',
+    description: 'array of ids',
+  })
+  categoryId: string;
 }
