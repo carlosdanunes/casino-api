@@ -25,6 +25,21 @@ export class User {
   @Column({ type: 'varchar', length: 10 })
   role: string;
 
+  @Column({ type: 'boolean', default: false })
+  hide_statistic = false;
+
+  @Column({ type: 'boolean', default: false })
+  hide_activity = false;
+
+  @Column({ type: 'boolean', default: false })
+  hide_games = false;
+
+  @Column({ type: 'boolean', default: false })
+  hide_rewards = false;
+
+  @Column({ type: 'boolean', default: false })
+  hide_all_data = false;
+
   @CreateDateColumn()
   created_at: Date;
 }

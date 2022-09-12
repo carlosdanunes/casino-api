@@ -8,30 +8,18 @@ import { AppService } from './app.service';
 import { ArticleModule } from './articles/article.module';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from 'src/category/category.module';
+import { typeormConfig } from 'src/orm.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UsersModule,
     ArticleModule,
     CategoryModule,
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        ssl: {
-          rejectUnauthorized: false,
-        },
-        username: process.env.TYPEORM_USERNAME,
-        password: process.env.TYPEORM_PASSWORD,
-        port: Number(process.env.TYPEORM_PORT),
-        host: process.env.TYPEORM_HOST,
-        database: process.env.TYPEORM_DATABASE,
-        //@ts-ignore
-        type: process.env.TYPEORM_TYPE,
-        synchronize: true,
-        entities: ['dist/**/*.entity.js'],
-      }),
+      useFactory: () => typeormConfig,
     }),
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

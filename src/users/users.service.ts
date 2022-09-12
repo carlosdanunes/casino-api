@@ -28,7 +28,19 @@ export class UserService {
     return res;
   }
 
-  async getUsers(cursor: number, take: number) {
+  async getUsers(
+    cursor: number,
+    take: number,
+    filterBy?: string,
+    order?: string,
+  ) {
+    if (filterBy) {
+      return await this.usersRepository.find({
+        order: { [filterBy]: order },
+        take: take,
+        skip: cursor,
+      });
+    }
     const res = await this.usersRepository.find({
       order: { created_at: 'DESC' },
       take: take,

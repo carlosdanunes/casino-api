@@ -1,15 +1,30 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { config } from 'dotenv';
+import { DataSource } from 'typeorm';
 
-export const config: TypeOrmModuleOptions = {
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
-  // port: 5432,
-  // username: 'vwjyxdrolyetry',
-  // password: '49cccd08371b8fbc11a416511d50646430f76c7e3abe35fbf3e67c4c1bf9afd9',
-  // host: 'ec2-54-157-16-196.compute-1.amazonaws.com',
-  // database: 'd489asb45b9phf',
-  // type: 'postgres',
-  // synchronize: true,
-  // entities: ['dist/**/*.entity{.ts,.js}'],
+config();
+
+const configService = new ConfigService();
+
+//@ts-ignore
+export const typeormConfig = {
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  username: configService.get('TYPEORM_USERNAME'),
+  password: configService.get('TYPEORM_PASSWORD') as string,
+  port: configService.get('TYPEORM_PORT'),
+  host: configService.get('TYPEORM_HOST'),
+  database: configService.get('TYPEORM_DATABASE'),
+  //@ts-ignore
+  type: configService.get('TYPEORM_TYPE'),
+  entities: ['dist/**/*.entity.js'],
+  synchronize: false,
+  migrations: ['dist/migrations/*{.ts,.js}'],
+  migrationsTableName: 'migrations_typeorm',
+  migrationsRun: true,
 };
+
+export default new DataSource(typeormConfig);
