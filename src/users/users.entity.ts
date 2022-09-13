@@ -26,6 +26,9 @@ export class User {
   role: string;
 
   @Column({ type: 'boolean', default: false })
+  is_deleted = false;
+
+  @Column({ type: 'boolean', default: false })
   hide_statistic = false;
 
   @Column({ type: 'boolean', default: false })

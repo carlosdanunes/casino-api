@@ -21,8 +21,21 @@ export class UserController {
   @ApiTags('Users')
   @ApiOperation({ summary: 'Get all users' })
   @Post()
-  async getAllUsers(@Body() body: { cursor: number; take: number }) {
-    return await this.userService.getUsers(body.cursor, body.take);
+  async getAllUsers(
+    @Body()
+    body: {
+      cursor: number;
+      take: number;
+      filterBy?: string;
+      order?: string;
+    },
+  ) {
+    return await this.userService.getUsers(
+      body.cursor,
+      body.take,
+      body.filterBy,
+      body.order,
+    );
   }
 
   @ApiTags('Users')
@@ -65,5 +78,21 @@ export class UserController {
   @Delete(':id')
   async deleteUser(@Param('id') userId: string) {
     return await this.userService.deleteUser(userId);
+  }
+
+  @ApiTags('Users')
+  @UseGuards(UserNotExistsGuard)
+  @ApiOperation({ summary: 'Ban User' })
+  @Patch('ban/:id')
+  async banUser(@Param('id') userId: string) {
+    return await this.userService.banUser(userId);
+  }
+
+  @ApiTags('Users')
+  @UseGuards(UserNotExistsGuard)
+  @ApiOperation({ summary: 'Unban User' })
+  @Patch('unban/:id')
+  async unbanUser(@Param('id') userId: string) {
+    return await this.userService.unbanUser(userId);
   }
 }

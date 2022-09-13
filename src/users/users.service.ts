@@ -73,6 +73,26 @@ export class UserService {
     return res;
   }
 
+  async banUser(userId: string) {
+    const banUser = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    return await this.usersRepository.save({
+      ...banUser,
+      is_deleted: true,
+    });
+  }
+
+  async unbanUser(userId: string) {
+    const banUser = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    return await this.usersRepository.save({
+      ...banUser,
+      is_deleted: false,
+    });
+  }
+
   async updateUser(
     userId: string,
     userData: UpdateUserDto,
