@@ -22,6 +22,7 @@ export class AuthController {
   @Public()
   @Post('/login')
   loginUser(@Body() loginDto: LoginDto) {
+    console.log('loginDto', loginDto);
     return this.authService.validateUser(loginDto.login, loginDto.password);
   }
 

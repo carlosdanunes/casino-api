@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ForbiddenException, Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { User } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './users.dto';
@@ -93,16 +93,10 @@ export class UserService {
     });
   }
 
-  async updateUser(
-    userId: string,
-    userData: UpdateUserDto,
-    isHashed?: boolean,
-  ) {
+  async updateUser(userId: string, userData: UpdateUserDto) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const hashedPassword = await bcrypt.hash(userData.password, 8);
     const updatedUserData = {
       ...userData,
-      password: isHashed ? userData.password : hashedPassword,
     };
     return await this.usersRepository.save({
       ...user,
@@ -110,8 +104,30 @@ export class UserService {
     });
   }
 
+  async updatePassword(userId: string, password: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const hashedPassword = await bcrypt.hash(password, 8);
+    return await this.usersRepository.save({
+      ...user,
+      password: hashedPassword,
+    });
+  }
+
   async deleteUser(userId: string) {
     this.usersRepository.delete({ id: userId });
     return userId;
+  }
+
+  async searchUser(searchParam: string) {
+    const res = await this.usersRepository.find({
+      where: [
+        { id: Like(`%${searchParam}%`) },
+        { username: Like(`%${searchParam}%`) },
+        { email: Like(`%${searchParam}%`) },
+        { role: Like(`%${searchParam}%`) },
+      ],
+    });
+
+    return res;
   }
 }

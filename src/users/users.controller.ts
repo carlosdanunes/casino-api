@@ -74,6 +74,17 @@ export class UserController {
 
   @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
+  @ApiOperation({ summary: 'Update password' })
+  @Patch('/password/:id')
+  async updatePassword(
+    @Param('id') userId: string,
+    @Body() body: { password: string },
+  ) {
+    return await this.userService.updatePassword(userId, body.password);
+  }
+
+  @ApiTags('Users')
+  @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Delete user' })
   @Delete(':id')
   async deleteUser(@Param('id') userId: string) {
@@ -94,5 +105,12 @@ export class UserController {
   @Patch('unban/:id')
   async unbanUser(@Param('id') userId: string) {
     return await this.userService.unbanUser(userId);
+  }
+
+  @ApiTags('Users')
+  @ApiOperation({ summary: 'Search user' })
+  @Post('/search')
+  async searchUser(@Body() body: { searchParam: string }) {
+    return await this.userService.searchUser(body.searchParam);
   }
 }
