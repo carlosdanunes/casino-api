@@ -7,6 +7,9 @@ import { Repository } from 'typeorm';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aws = require('aws-sdk');
+
 @Injectable()
 export class ArticleService {
   constructor(
@@ -154,5 +157,34 @@ export class ArticleService {
     console.log(`${filename} uploaded.`);
 
     return urls[0];
+  }
+
+  async uploadFileWithS3(file) {
+    aws.config.update({
+      accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+      region: 'us-east-1',
+    });
+    const s3 = new aws.S3();
+
+    const base64Data = new Buffer(file.buffer, 'binary');
+
+    const filename = file.originalname;
+
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: filename,
+      Body: base64Data,
+    };
+    const uploadedImage = await s3
+      .upload(params, async (err, data) => {
+        if (err) {
+          throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+      })
+      .promise();
+
+    return uploadedImage.Location;
   }
 }

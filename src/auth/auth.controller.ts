@@ -2,11 +2,7 @@ import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import {
-  UserExistGuard,
-  UserAdminGuard,
-  UserNotExistsGuard,
-} from '../users/users.guard';
+import { UserExistGuard, UserAdminGuard } from '../users/users.guard';
 import { RegisterDto, LoginDto, ForgotPasswordDto } from './auth.dto';
 import { UserService } from 'src/users/users.service';
 
@@ -22,14 +18,12 @@ export class AuthController {
   @Public()
   @Post('/login')
   loginUser(@Body() loginDto: LoginDto) {
-    console.log('loginDto', loginDto);
     return this.authService.validateUser(loginDto.login, loginDto.password);
   }
 
   @ApiTags('Auth')
   @ApiOperation({ summary: 'Register new user' })
   @Public()
-  // @UseGuards(UserExistGuard)
   @Post('/register')
   async addUser(@Body() registerDto: RegisterDto) {
     const res = await this.authService.register(registerDto);

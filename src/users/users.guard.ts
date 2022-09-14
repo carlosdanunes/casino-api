@@ -71,7 +71,7 @@ export class UserAdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
     const user = await this.usersRepository.findOne({
-      where: { email: req.body.email },
+      where: [{ email: req.body.login }, { username: req.body.login }],
     });
 
     if (!user) {
@@ -82,6 +82,33 @@ export class UserAdminGuard implements CanActivate {
       return true;
     } else {
       throw new ForbiddenException('User is not an admin');
+    }
+  }
+}
+
+@Injectable()
+export class UserDeleted implements CanActivate {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  async canActivate(context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest();
+    const user = await this.usersRepository.findOne({
+      where: { email: req.body.email },
+    });
+
+    console.log('user', user);
+
+    if (!user) {
+      throw new ForbiddenException('User with this email not exists');
+    }
+
+    if (!user.is_deleted) {
+      return true;
+    } else {
+      throw new ForbiddenException('User is banned');
     }
   }
 }

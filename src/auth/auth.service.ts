@@ -23,6 +23,11 @@ export class AuthService {
 
     if (user) {
       const isValid = await bcrypt.compare(password, user.password);
+
+      if (user.is_deleted) {
+        return { error: true, message: 'User is banned' };
+      }
+
       if (user && isValid) {
         return this.login(user);
       }

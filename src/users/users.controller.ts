@@ -7,12 +7,15 @@ import {
   Delete,
   UseGuards,
   Post,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './users.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { UserNotExistsGuard } from './users.guard';
 import { Public } from '../decorators/public.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -64,12 +67,14 @@ export class UserController {
   @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Update user' })
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
   async updateUser(
     @Param('id') userId: string,
     @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() image: Express.Multer.File,
   ) {
-    return await this.userService.updateUser(userId, updateUserDto);
+    return await this.userService.updateUser(userId, updateUserDto, image);
   }
 
   @ApiTags('Users')
