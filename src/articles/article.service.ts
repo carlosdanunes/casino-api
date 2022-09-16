@@ -53,7 +53,13 @@ export class ArticleService {
     return categoriesIds;
   }
 
-  async getArticlesCount() {
+  async getArticlesCount(categoryId?: string) {
+    if (categoryId) {
+      const res = await this.articleRepository.findAndCount({
+        where: { categoryId },
+      });
+      return res;
+    }
     const res = await this.articleRepository.count();
     return res;
   }
