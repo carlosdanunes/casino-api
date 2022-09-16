@@ -1,4 +1,4 @@
-import { CategoryToArticle } from 'src/categoryToArticle/categoryToArticle.entity';
+import { Article } from 'src/articles/article.entity';
 import {
   Column,
   CreateDateColumn,
@@ -20,9 +20,9 @@ export class Category {
   // @Column({ name: 'articleId' })
   // articleId: string;
 
-  @OneToMany(() => CategoryToArticle, category => category.article)
+  @OneToMany(() => Article, article => article.id)
   @JoinColumn({ name: 'articleId' })
-  article: CategoryToArticle;
+  article: Article;
 
   @CreateDateColumn()
   created_at: Date;

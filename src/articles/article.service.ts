@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as admin from 'firebase-admin';
 import { Category } from 'src/category/category.entity';
-import { CategoryToArticle } from 'src/categoryToArticle/categoryToArticle.entity';
 import { Repository } from 'typeorm';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
@@ -15,8 +14,6 @@ export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
-    @InjectRepository(CategoryToArticle)
-    private categoriesToArticleRepository: Repository<CategoryToArticle>,
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
   ) {}
@@ -40,15 +37,10 @@ export class ArticleService {
     );
     const categoriesIds = Promise.all(
       res.map(async article => {
-        const categoryToArticle =
-          await this.categoriesToArticleRepository.findOne({
-            where: { categoryId: article.categoryId },
-          });
-        if (categoryToArticle) {
-          console.log('categoryId', categoryToArticle);
-          const category = await this.categoriesRepository.findOne({
-            where: { id: categoryToArticle.categoryId },
-          });
+        const category = await this.categoriesRepository.findOne({
+          where: { id: article.categoryId },
+        });
+        if (category) {
           return {
             ...article,
             categoryId: category.id,
@@ -94,17 +86,10 @@ export class ArticleService {
       categoryId,
       publicUrl,
     });
-    await this.categoriesToArticleRepository.save({
-      category: categoryId,
-      categoryId,
-      article: res,
-      articleId: res.id,
-    });
     return res;
   }
 
   async deleteArticle(articleId: string) {
-    await this.categoriesToArticleRepository.delete({ articleId });
     await this.articleRepository.delete({ id: articleId });
     return articleId;
   }
@@ -129,13 +114,6 @@ export class ArticleService {
 
     if (image) {
       url = await this.uploadFileWithS3(image);
-    }
-    if (articleData.categoryId) {
-      await this.categoriesToArticleRepository.save({
-        categoryId: articleData.categoryId,
-        article: article,
-        articleId: articleId,
-      });
     }
     return await this.articleRepository.save({
       ...article,
