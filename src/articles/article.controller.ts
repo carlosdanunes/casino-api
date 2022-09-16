@@ -91,4 +91,12 @@ export class ArticleController {
   async getSingleArticleById(@Param('id') articleId: string) {
     return await this.articleService.getSingleArticleById(articleId);
   }
+
+  @ApiTags('Article')
+  @ApiOperation({ summary: 'Get single article by publicUrl' })
+  @Public()
+  @Get('/url/:publicUrl')
+  async getSingleArticleByPublicUrl(@Param('publicUrl') publicUrl: string) {
+    return await this.articleService.getSingleArticleByPublicUrl(publicUrl);
+  }
 }

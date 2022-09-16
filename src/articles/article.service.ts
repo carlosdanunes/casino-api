@@ -139,6 +139,17 @@ export class ArticleService {
     };
   }
 
+  async getSingleArticleByPublicUrl(publicUrl: string) {
+    const res = await this.articleRepository.findOne({
+      where: { publicUrl },
+    });
+    console.log(res);
+    console.log(publicUrl);
+    return {
+      ...res,
+    };
+  }
+
   // async uploadFile(file) {
   //   const bucket = admin.storage().bucket();
   //   console.log('file', file);
