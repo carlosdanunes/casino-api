@@ -71,9 +71,18 @@ export class ArticleService {
     text,
     subtitle,
     categoryId,
+    publicUrl,
     image: Express.Multer.File,
   ) {
     const url = await this.uploadFileWithS3(image);
+
+    const sameArticleUrl = await this.articleRepository.findOne({
+      where: { publicUrl },
+    });
+
+    if (sameArticleUrl) {
+      return { error: true, message: 'Article with this url already exists' };
+    }
 
     const res = await this.articleRepository.save({
       title,
@@ -82,11 +91,12 @@ export class ArticleService {
       imageUrl: url,
       likesCount: 0,
       viewsCount: 0,
-      categoryId: categoryId,
+      categoryId,
+      publicUrl,
     });
     await this.categoriesToArticleRepository.save({
       category: categoryId,
-      categoryId: categoryId,
+      categoryId,
       article: res,
       articleId: res.id,
     });
@@ -108,8 +118,17 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id: articleId },
     });
+
+    const sameArticleUrl = await this.articleRepository.findOne({
+      where: { publicUrl: articleData.publicUrl },
+    });
+
+    if (sameArticleUrl) {
+      return { error: true, message: 'Article with this url already exists' };
+    }
+
     if (image) {
-      url = await this.uploadFile(image);
+      url = await this.uploadFileWithS3(image);
     }
     if (articleData.categoryId) {
       await this.categoriesToArticleRepository.save({
@@ -136,29 +155,29 @@ export class ArticleService {
     };
   }
 
-  async uploadFile(file) {
-    const bucket = admin.storage().bucket();
-    console.log('file', file);
+  // async uploadFile(file) {
+  //   const bucket = admin.storage().bucket();
+  //   console.log('file', file);
 
-    const filename = file.originalname;
+  //   const filename = file.originalname;
 
-    // Uploads a local file to the bucket
-    await bucket
-      .file(filename)
-      .save(file.buffer)
-      .then(res => console.log(res));
-    const bucketFile = bucket.file(filename);
-    console.log('uploaded');
+  //   // Uploads a local file to the bucket
+  //   await bucket
+  //     .file(filename)
+  //     .save(file.buffer)
+  //     .then(res => console.log(res));
+  //   const bucketFile = bucket.file(filename);
+  //   console.log('uploaded');
 
-    const urls = await bucketFile.getSignedUrl({
-      action: 'read',
-      expires: '03-09-2491',
-    });
+  //   const urls = await bucketFile.getSignedUrl({
+  //     action: 'read',
+  //     expires: '03-09-2491',
+  //   });
 
-    console.log(`${filename} uploaded.`);
+  //   console.log(`${filename} uploaded.`);
 
-    return urls[0];
-  }
+  //   return urls[0];
+  // }
 
   async uploadFileWithS3(file) {
     aws.config.update({

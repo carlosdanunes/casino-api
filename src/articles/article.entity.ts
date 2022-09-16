@@ -26,6 +26,9 @@ export class Article {
   @Column({ type: 'varchar', length: 1000 })
   imageUrl: string;
 
+  @Column({ type: 'varchar', length: 1000 })
+  publicUrl: string;
+
   @CreateDateColumn()
   created_at: Date;
 
