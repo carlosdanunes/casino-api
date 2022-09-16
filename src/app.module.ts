@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { ArticleModule } from './articles/article.module';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from 'src/category/category.module';
+import { WssModule } from './wss/wss.module';
 import { typeormConfig } from 'src/orm.config';
 
 @Module({
@@ -20,6 +21,8 @@ import { typeormConfig } from 'src/orm.config';
     TypeOrmModule.forRootAsync({
       useFactory: () => typeormConfig,
     }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    WssModule,
   ],
   controllers: [AppController],
   providers: [AppService],

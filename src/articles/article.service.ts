@@ -39,7 +39,7 @@ export class ArticleService {
           },
     );
     const categoriesIds = Promise.all(
-      res.map(async (article) => {
+      res.map(async article => {
         const categoryToArticle =
           await this.categoriesToArticleRepository.findOne({
             where: { categoryId: article.categoryId },
@@ -73,7 +73,7 @@ export class ArticleService {
     categoryId,
     image: Express.Multer.File,
   ) {
-    const url = await this.uploadFile(image);
+    const url = await this.uploadFileWithS3(image);
 
     const res = await this.articleRepository.save({
       title,
@@ -94,7 +94,8 @@ export class ArticleService {
   }
 
   async deleteArticle(articleId: string) {
-    this.articleRepository.delete({ id: articleId });
+    await this.categoriesToArticleRepository.delete({ articleId });
+    await this.articleRepository.delete({ id: articleId });
     return articleId;
   }
 
@@ -145,7 +146,7 @@ export class ArticleService {
     await bucket
       .file(filename)
       .save(file.buffer)
-      .then((res) => console.log(res));
+      .then(res => console.log(res));
     const bucketFile = bucket.file(filename);
     console.log('uploaded');
 

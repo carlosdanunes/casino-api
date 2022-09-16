@@ -41,7 +41,7 @@ export class Article {
   @Column({ name: 'categoryId' })
   categoryId: string;
 
-  @OneToMany(() => CategoryToArticle, (category) => category.category)
+  @OneToMany(() => CategoryToArticle, category => category.category)
   @JoinColumn({ name: 'categoryId' })
   category: CategoryToArticle;
 }

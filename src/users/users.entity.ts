@@ -19,6 +19,9 @@ export class User {
   @Column({ type: 'varchar', length: 200 })
   password: string;
 
+  @Column({ length: 200 })
+  seed: string;
+
   @Column({ type: 'varchar', length: 1000 })
   avatarUrl: string;
 

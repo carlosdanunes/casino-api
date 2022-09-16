@@ -20,7 +20,7 @@ export class Category {
   // @Column({ name: 'articleId' })
   // articleId: string;
 
-  @OneToMany(() => CategoryToArticle, (category) => category.article)
+  @OneToMany(() => CategoryToArticle, category => category.article)
   @JoinColumn({ name: 'articleId' })
   article: CategoryToArticle;
 

@@ -22,11 +22,11 @@ export class CategoryToArticle {
   @Column({ name: 'categoryId' })
   categoryId: string;
 
-  @ManyToOne(() => Category, (category) => category.id)
+  @ManyToOne(() => Category, category => category.id)
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @ManyToOne(() => Article, (article) => article.id)
+  @ManyToOne(() => Article, article => article.id)
   @JoinColumn({ name: 'articleId' })
   article: Article;
 

@@ -8,12 +8,15 @@ import { UpdateUserDto } from './users.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import * as admin from 'firebase-admin';
+import { generateMnemonic } from 'bip39';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aws = require('aws-sdk');
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
+  private generateMnemonic = generateMnemonic;
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -22,12 +25,14 @@ export class UserService {
 
   async addUser(username: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 8);
+    const seed = this.generateMnemonic();
     const res = await this.usersRepository.save({
       username,
       email,
       password: hashedPassword,
       avatarUrl: '',
       role: 'user',
+      seed,
     });
     return res;
   }
@@ -103,7 +108,7 @@ export class UserService {
       ...userData,
     };
     if (image) {
-      const avatarUrl = await this.uploadFile(image);
+      const avatarUrl = await this.uploadFileWithS3(image);
       return await this.usersRepository.save({
         ...user,
         ...updatedUserData,
@@ -153,7 +158,7 @@ export class UserService {
     await bucket
       .file(filename)
       .save(file.buffer)
-      .then((res) => console.log(res));
+      .then(res => console.log(res));
     const bucketFile = bucket.file(filename);
     console.log('uploaded');
 
