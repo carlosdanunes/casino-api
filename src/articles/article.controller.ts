@@ -38,9 +38,9 @@ export class ArticleController {
   @Public()
   @ApiOperation({ summary: 'Get articles count' })
   @Public()
-  @Get('/count')
-  async getArticlesCount() {
-    return await this.articleService.getArticlesCount();
+  @Get('/count/:category')
+  async getArticlesCount(@Param('id') categoryId: string) {
+    return await this.articleService.getArticlesCount(categoryId);
   }
 
   @ApiTags('Article')
