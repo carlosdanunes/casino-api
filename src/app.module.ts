@@ -9,6 +9,7 @@ import { ArticleModule } from './articles/article.module';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from 'src/category/category.module';
 import { WssModule } from './wss/wss.module';
+import { VaultModule } from './vault/vault.module';
 import { typeormConfig } from 'src/orm.config';
 
 @Module({
@@ -21,8 +22,9 @@ import { typeormConfig } from 'src/orm.config';
     TypeOrmModule.forRootAsync({
       useFactory: () => typeormConfig,
     }),
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ cache: true }),
     WssModule,
+    VaultModule,
   ],
   controllers: [AppController],
   providers: [AppService],

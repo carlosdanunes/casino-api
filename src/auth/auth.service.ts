@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../users/users.entity';
+import { User, UserEntity } from '../users/users.entity';
 import * as bcrypt from 'bcryptjs';
 import { ForgotPasswordDto, RegisterDto } from './auth.dto';
 import { UserService } from '../users/users.service';
@@ -36,10 +36,10 @@ export class AuthService {
   }
 
   async login(user: User) {
-    return {
+    return new UserEntity({
       ...user,
       access_token: this.jwtService.sign({ sub: user.id }),
-    };
+    });
   }
 
   async register(registerDto: RegisterDto) {
@@ -50,7 +50,9 @@ export class AuthService {
       return { error: true, message: 'Email already in use' };
     }
 
-    return await this.userService.addUser(username, email, password);
+    return new UserEntity(
+      await this.userService.addUser(username, email, password),
+    );
   }
 
   async resetPassword(forgotPasswordDto: ForgotPasswordDto) {

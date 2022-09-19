@@ -24,7 +24,8 @@ export class UserService {
   ) {}
 
   async addUser(username: string, email: string, password: string) {
-    const hashedPassword = await bcrypt.hash(password, 8);
+    const salt = await bcrypt.genSalt(8);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const seed = this.generateMnemonic();
     const res = await this.usersRepository.save({
       username,

@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
-
+import { Request } from 'express';
 @Injectable()
 export class UserOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
@@ -94,7 +94,7 @@ export class UserDeleted implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>(); // todo types for req
     const user = await this.usersRepository.findOne({
       where: { email: req.body.email },
     });

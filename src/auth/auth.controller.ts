@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Body,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from '../decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -16,6 +23,7 @@ export class AuthController {
   @ApiTags('Auth')
   @ApiOperation({ summary: 'Login user' })
   @Public()
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('/login')
   loginUser(@Body() loginDto: LoginDto) {
     return this.authService.validateUser(loginDto.login, loginDto.password);
@@ -24,6 +32,8 @@ export class AuthController {
   @ApiTags('Auth')
   @ApiOperation({ summary: 'Register new user' })
   @Public()
+  @UseInterceptors(ClassSerializerInterceptor)
+  // @UseGuards(UserExistGuard)
   @Post('/register')
   async addUser(@Body() registerDto: RegisterDto) {
     const res = await this.authService.register(registerDto);

@@ -1,12 +1,12 @@
 import {
-  ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { PriceService } from './price/price.service';
+import { Server } from 'socket.io';
+import { PriceService } from '../priceService/price.service';
+import Currency from '../priceService/symbols';
 
 @WebSocketGateway({
   cors: {
@@ -17,14 +17,14 @@ export class WssGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   constructor(private readonly priceService: PriceService) {}
   connectedCount = 0;
-  handleConnection(@ConnectedSocket() client: Socket) {
+  handleConnection() {
     this.connectedCount++;
     if (this.connectedCount === 1)
       this.priceService.startMainLoop(this.server, [
-        'BTCUSDT',
-        'ETHUSDT',
-        'BNBUSDT',
-        'SOLUSDT',
+        Currency.BTCUSDT,
+        Currency.ETHUSDT,
+        Currency.BNBUSDT,
+        Currency.SOLUSDT,
       ]);
   }
 

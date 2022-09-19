@@ -114,7 +114,7 @@ export class ArticleService {
       where: { publicUrl: articleData.publicUrl },
     });
 
-    if (sameArticleUrl) {
+    if (sameArticleUrl && sameArticleUrl.id !== article.id) {
       return { error: true, message: 'Article with this url already exists' };
     }
 

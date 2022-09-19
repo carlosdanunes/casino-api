@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -19,7 +20,7 @@ export class User {
   @Column({ type: 'varchar', length: 200 })
   password: string;
 
-  @Column({ length: 200 })
+  @Column({ length: 200, unique: true })
   seed: string;
 
   @Column({ type: 'varchar', length: 1000 })
@@ -48,4 +49,23 @@ export class User {
 
   @CreateDateColumn()
   created_at: Date;
+}
+
+export class UserEntity {
+  id: string;
+  username: string;
+  email: string;
+  @Exclude()
+  password: string;
+  @Exclude()
+  seed: string;
+  avatarUrl: string;
+  role: string;
+  access_token?: string;
+
+  created_at: Date;
+
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }
