@@ -100,8 +100,19 @@ export class UserController {
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Ban User' })
   @Patch('ban/:id')
-  async banUser(@Param('id') userId: string) {
-    return await this.userService.banUser(userId);
+  async banUser(
+    @Param('id') userId: string,
+    @Body()
+    body: {
+      ban_message: string;
+      deleted_till: Date;
+    },
+  ) {
+    return await this.userService.banUser(
+      userId,
+      body.ban_message,
+      body.deleted_till,
+    );
   }
 
   @ApiTags('Users')
