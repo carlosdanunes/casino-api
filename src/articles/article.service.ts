@@ -126,9 +126,9 @@ export class ArticleService {
       where: { publicUrl: articleData.publicUrl },
     });
 
-    if (sameArticleUrl && sameArticleUrl.id !== article.id) {
+    /* if (sameArticleUrl && sameArticleUrl.id !== article.id) {
       return { error: true, message: 'Article with this url already exists' };
-    }
+    } */
 
     if (image) {
       url = await this.uploadFileWithS3(image);

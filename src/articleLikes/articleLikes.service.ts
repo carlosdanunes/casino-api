@@ -14,8 +14,16 @@ export class ArticleLikesService {
   ) {}
 
   async addLike(articleId: string, userId: string) {
+    const sameUserLike = await this.articleLikesRepository.findOne({
+      where: { articleId, userId },
+    });
+
+    if (sameUserLike) {
+      return { error: true, message: 'User already liked this post' };
+    }
+
     const res = await this.articleLikesRepository.save({ articleId, userId });
-    const article = await this.articleRepository.find({
+    const article = await this.articleRepository.findOne({
       where: { id: articleId },
     });
     const likes = await this.articleLikesRepository.findAndCount({
@@ -28,13 +36,24 @@ export class ArticleLikesService {
       likesCount: likes[1],
     });
 
-    console.log(updatedArticle);
-
     return updatedArticle;
   }
 
   async deleteLike(articleId: string, userId: string) {
     const res = await this.articleLikesRepository.delete({ articleId, userId });
-    return res;
+
+    const article = await this.articleRepository.findOne({
+      where: { id: articleId },
+    });
+    const likes = await this.articleLikesRepository.findAndCount({
+      relations: [`article`],
+      where: { articleId },
+    });
+
+    const updatedArticle = await this.articleRepository.save({
+      ...article,
+      likesCount: likes[1],
+    });
+    return updatedArticle;
   }
 }
