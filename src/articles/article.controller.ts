@@ -53,8 +53,14 @@ export class ArticleController {
   ) {
     return await this.articleService.addArticle(
       addArticleDto.title,
+      addArticleDto.title_ru,
+      addArticleDto.title_ua,
       addArticleDto.text,
+      addArticleDto.text_ru,
+      addArticleDto.text_ua,
       addArticleDto.subtitle,
+      addArticleDto.subtitle_ru,
+      addArticleDto.subtitle_ua,
       addArticleDto.categoryId,
       addArticleDto.publicUrl,
       image,
@@ -98,5 +104,13 @@ export class ArticleController {
   @Get('/url/:publicUrl')
   async getSingleArticleByPublicUrl(@Param('publicUrl') publicUrl: string) {
     return await this.articleService.getSingleArticleByPublicUrl(publicUrl);
+  }
+
+  @ApiTags('Article')
+  @ApiOperation({ summary: `Update article views count` })
+  @Public()
+  @Patch(`/views/:id`)
+  async updateArticleViewsCount(@Param(`id`) articleId: string) {
+    return await this.articleService.updateArticleViewsCount(articleId);
   }
 }

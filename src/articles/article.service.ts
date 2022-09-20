@@ -66,8 +66,14 @@ export class ArticleService {
 
   async addArticle(
     title,
+    title_ru,
+    title_ua,
     text,
+    text_ru,
+    text_ua,
     subtitle,
+    subtitle_ru,
+    subtitle_ua,
     categoryId,
     publicUrl,
     image: Express.Multer.File,
@@ -84,8 +90,14 @@ export class ArticleService {
 
     const res = await this.articleRepository.save({
       title,
+      title_ru,
+      title_ua,
       text,
+      text_ru,
+      text_ua,
       subtitle,
+      subtitle_ru,
+      subtitle_ua,
       imageUrl: url,
       likesCount: 0,
       viewsCount: 0,
@@ -148,6 +160,16 @@ export class ArticleService {
     return {
       ...res,
     };
+  }
+
+  async updateArticleViewsCount(id: string) {
+    const res = await this.articleRepository.findOne({
+      where: { id },
+    });
+    return await this.articleRepository.save({
+      ...res,
+      viewsCount: res.viewsCount + 1,
+    });
   }
 
   // async uploadFile(file) {
