@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity(`article_likes`)
+@Entity({ name: `article_likes`, schema: 'public' })
 export class ArticleLikes {
   @PrimaryGeneratedColumn(`uuid`)
   id: string;
