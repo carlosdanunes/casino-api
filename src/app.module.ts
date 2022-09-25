@@ -11,6 +11,7 @@ import { CategoryModule } from 'src/category/category.module';
 import { WssModule } from './wss/wss.module';
 import { VaultModule } from './vault/vault.module';
 import { typeormConfig } from 'src/orm.config';
+import { ArticlesToUsersModule } from 'src/articlesToUsers/articlesToUsers.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { typeormConfig } from 'src/orm.config';
     ConfigModule.forRoot({ cache: true }),
     WssModule,
     VaultModule,
+    ArticlesToUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { Public } from 'src/decorators/public.decorator';
 import { AddArticleDto, UpdateArticleDto } from './article.dto';
 import { ArticleService } from './article.service';
@@ -25,12 +26,19 @@ export class ArticleController {
   @Public()
   @Post()
   async getArticles(
-    @Body() body: { cursor: number; take: number; category?: string },
+    @Body()
+    body: {
+      cursor: number;
+      take: number;
+      category?: string;
+      userId?: string;
+    },
   ) {
     return await this.articleService.getArticles(
       body.cursor,
       body.take,
       body.category,
+      body.userId,
     );
   }
 
