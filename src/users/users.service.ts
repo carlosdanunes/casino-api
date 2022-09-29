@@ -83,13 +83,16 @@ export class UserService {
     return res;
   }
 
-  async banUser(userId: string) {
+  async banUser(userId: string, ban_message: string, deleted_till: Date) {
     const banUser = await this.usersRepository.findOne({
       where: { id: userId },
     });
-    return await this.usersRepository.save({
+
+    await this.usersRepository.save({
       ...banUser,
       is_deleted: true,
+      ban_message: ban_message,
+      deleted_till: deleted_till,
     });
   }
 
@@ -100,6 +103,8 @@ export class UserService {
     return await this.usersRepository.save({
       ...banUser,
       is_deleted: false,
+      ban_message: '',
+      deleted_till: null,
     });
   }
 

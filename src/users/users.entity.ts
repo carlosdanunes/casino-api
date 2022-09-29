@@ -47,6 +47,12 @@ export class User {
   @Column({ type: 'boolean', default: false })
   hide_all_data = false;
 
+  @Column({ type: 'varchar', length: 1000 })
+  ban_message: string;
+
+  @CreateDateColumn({ nullable: true })
+  deleted_till: Date;
+
   @CreateDateColumn()
   created_at: Date;
 }
@@ -62,7 +68,8 @@ export class UserEntity {
   avatarUrl: string;
   role: string;
   access_token?: string;
-
+  deleted_till: Date;
+  ban_message: string;
   created_at: Date;
 
   constructor(partial: Partial<UserEntity>) {

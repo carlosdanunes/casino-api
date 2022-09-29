@@ -12,6 +12,7 @@ import { WssModule } from './wss/wss.module';
 import { VaultModule } from './vault/vault.module';
 import { typeormConfig } from 'src/orm.config';
 import { ArticleLikesModule } from './articleLikes/articleLikes.module';
+import { ArticlesToUsersModule } from 'src/articlesToUsers/articlesToUsers.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ArticleLikesModule } from './articleLikes/articleLikes.module';
     ConfigModule.forRoot({ cache: true }),
     WssModule,
     VaultModule,
+    ArticlesToUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as admin from 'firebase-admin';
+import { ArticlesToUsers } from 'src/articlesToUsers/articlesToUsers.entity';
 import { Category } from 'src/category/category.entity';
 import { Repository } from 'typeorm';
 import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aws = require('aws-sdk');
@@ -16,9 +19,20 @@ export class ArticleService {
     private articleRepository: Repository<Article>,
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    @InjectRepository(ArticlesToUsers)
+    private articlesToUsersRepository: Repository<ArticlesToUsers>,
+    @Inject(REQUEST) private readonly request: Request,
   ) {}
 
-  async getArticles(cursor: number, take: number, category?: string) {
+  async getArticles(
+    cursor: number,
+    take: number,
+    category?: string,
+    userId?: string,
+  ) {
+    //@ts-ignore
+    console.log('this.request.body', this.request.user);
+    console.log('userId', userId);
     const res = await this.articleRepository.find(
       !category
         ? {
@@ -37,17 +51,30 @@ export class ArticleService {
     );
     const categoriesIds = Promise.all(
       res.map(async article => {
+        let updatedArticle = { ...article } as any;
         const category = await this.categoriesRepository.findOne({
           where: { id: article.categoryId },
         });
+
+        const userToArticle = await this.articlesToUsersRepository.findOne({
+          where: { articleId: article.id, userId },
+        });
+
         if (category) {
-          return {
-            ...article,
+          updatedArticle = {
+            ...updatedArticle,
             categoryId: category.id,
             categoryName: category.name,
           };
         }
-        return article;
+
+        if (userToArticle) {
+          updatedArticle = { ...updatedArticle, isNew: false };
+        } else {
+          updatedArticle = { ...updatedArticle, isNew: true };
+        }
+
+        return updatedArticle;
       }),
     );
     return categoriesIds;
