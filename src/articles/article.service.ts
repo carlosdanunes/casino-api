@@ -208,12 +208,11 @@ export class ArticleService {
     };
   }
 
-  async getSingleArticleByPublicUrl(publicUrl: string) {
+  async getSingleArticleByPublicUrl(publicUrl: string, userId: string) {
     const res = await this.articleRepository.findOne({
       where: { publicUrl },
     });
-    console.log(res);
-    console.log(publicUrl);
+    await this.addArticleToUser(res.id, userId);
     return {
       ...res,
     };
@@ -227,6 +226,15 @@ export class ArticleService {
       ...res,
       viewsCount: res.viewsCount + 1,
     });
+  }
+
+  async addArticleToUser(articleId: string, userId: string) {
+    const res = await this.articlesToUsersRepository.save({
+      articleId,
+      userId,
+    });
+
+    return res;
   }
 
   async uploadFile(file) {
