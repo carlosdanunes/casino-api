@@ -93,13 +93,34 @@ export class ArticleService {
 
   async addArticle(
     title,
+    title_ru,
+    title_ua,
+    title_de,
+    title_es,
+    title_fr,
+    title_pt,
+    title_tr,
     text,
+    text_ru,
+    text_ua,
+    text_de,
+    text_es,
+    text_fr,
+    text_pt,
+    text_tr,
     subtitle,
+    subtitle_ru,
+    subtitle_ua,
+    subtitle_de,
+    subtitle_es,
+    subtitle_fr,
+    subtitle_pt,
+    subtitle_tr,
     categoryId,
     publicUrl,
     image: Express.Multer.File,
   ) {
-    const url = await this.uploadFileWithS3(image);
+    const url = await this.uploadFile(image);
 
     const sameArticleUrl = await this.articleRepository.findOne({
       where: { publicUrl },
@@ -111,8 +132,29 @@ export class ArticleService {
 
     const res = await this.articleRepository.save({
       title,
+      title_ru,
+      title_ua,
+      title_de,
+      title_es,
+      title_fr,
+      title_pt,
+      title_tr,
       text,
+      text_ru,
+      text_ua,
+      text_de,
+      text_es,
+      text_fr,
+      text_pt,
+      text_tr,
       subtitle,
+      subtitle_ru,
+      subtitle_ua,
+      subtitle_de,
+      subtitle_es,
+      subtitle_fr,
+      subtitle_pt,
+      subtitle_tr,
       imageUrl: url,
       likesCount: 0,
       viewsCount: 0,
@@ -141,12 +183,12 @@ export class ArticleService {
       where: { publicUrl: articleData.publicUrl },
     });
 
-    if (sameArticleUrl && sameArticleUrl.id !== article.id) {
+    /* if (sameArticleUrl && sameArticleUrl.id !== article.id) {
       return { error: true, message: 'Article with this url already exists' };
-    }
+    } */
 
     if (image) {
-      url = await this.uploadFileWithS3(image);
+      url = await this.uploadFile(image);
     }
     return await this.articleRepository.save({
       ...article,
@@ -177,31 +219,40 @@ export class ArticleService {
     };
   }
 
-  // async uploadFile(file) {
-  //   const bucket = admin.storage().bucket();
-  //   console.log('file', file);
+  async updateArticleViewsCount(id: string) {
+    const res = await this.articleRepository.findOne({
+      where: { id },
+    });
+    return await this.articleRepository.save({
+      ...res,
+      viewsCount: res.viewsCount + 1,
+    });
+  }
 
-  //   const filename = file.originalname;
+  async uploadFile(file) {
+    const bucket = admin.storage().bucket();
+    console.log('file', file);
 
-  //   // Uploads a local file to the bucket
-  //   await bucket
-  //     .file(filename)
-  //     .save(file.buffer)
-  //     .then(res => console.log(res));
-  //   const bucketFile = bucket.file(filename);
-  //   console.log('uploaded');
+    const filename = file.originalname;
 
-  //   const urls = await bucketFile.getSignedUrl({
-  //     action: 'read',
-  //     expires: '03-09-2491',
-  //   });
+    await bucket
+      .file(filename)
+      .save(file.buffer)
+      .then(res => console.log(res));
+    const bucketFile = bucket.file(filename);
+    console.log('uploaded');
 
-  //   console.log(`${filename} uploaded.`);
+    const urls = await bucketFile.getSignedUrl({
+      action: 'read',
+      expires: '03-09-2491',
+    });
 
-  //   return urls[0];
-  // }
+    console.log(`${filename} uploaded.`);
 
-  async uploadFileWithS3(file) {
+    return urls[0];
+  }
+
+  /*  async uploadFileWithS3(file) {
     aws.config.update({
       accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
@@ -228,5 +279,5 @@ export class ArticleService {
       .promise();
 
     return uploadedImage.Location;
-  }
+  } */
 }

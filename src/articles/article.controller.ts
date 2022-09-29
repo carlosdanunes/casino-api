@@ -61,8 +61,29 @@ export class ArticleController {
   ) {
     return await this.articleService.addArticle(
       addArticleDto.title,
+      addArticleDto.title_ru,
+      addArticleDto.title_ua,
+      addArticleDto.title_de,
+      addArticleDto.title_es,
+      addArticleDto.title_fr,
+      addArticleDto.title_pt,
+      addArticleDto.title_tr,
       addArticleDto.text,
+      addArticleDto.text_ru,
+      addArticleDto.text_ua,
+      addArticleDto.text_de,
+      addArticleDto.text_es,
+      addArticleDto.text_fr,
+      addArticleDto.text_pt,
+      addArticleDto.text_tr,
       addArticleDto.subtitle,
+      addArticleDto.subtitle_ru,
+      addArticleDto.subtitle_ua,
+      addArticleDto.subtitle_de,
+      addArticleDto.subtitle_es,
+      addArticleDto.subtitle_fr,
+      addArticleDto.subtitle_pt,
+      addArticleDto.subtitle_tr,
       addArticleDto.categoryId,
       addArticleDto.publicUrl,
       image,
@@ -106,5 +127,13 @@ export class ArticleController {
   @Get('/url/:publicUrl')
   async getSingleArticleByPublicUrl(@Param('publicUrl') publicUrl: string) {
     return await this.articleService.getSingleArticleByPublicUrl(publicUrl);
+  }
+
+  @ApiTags('Article')
+  @ApiOperation({ summary: `Update article views count` })
+  @Public()
+  @Patch(`/views/:id`)
+  async updateArticleViewsCount(@Param(`id`) articleId: string) {
+    return await this.articleService.updateArticleViewsCount(articleId);
   }
 }

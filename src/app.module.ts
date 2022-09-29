@@ -11,6 +11,7 @@ import { CategoryModule } from 'src/category/category.module';
 import { WssModule } from './wss/wss.module';
 import { VaultModule } from './vault/vault.module';
 import { typeormConfig } from 'src/orm.config';
+import { ArticleLikesModule } from './articleLikes/articleLikes.module';
 import { ArticlesToUsersModule } from 'src/articlesToUsers/articlesToUsers.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { ArticlesToUsersModule } from 'src/articlesToUsers/articlesToUsers.modul
     AuthModule,
     UsersModule,
     ArticleModule,
+    ArticleLikesModule,
     CategoryModule,
     TypeOrmModule.forRootAsync({
       useFactory: () => typeormConfig,
