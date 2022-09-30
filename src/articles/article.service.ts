@@ -8,6 +8,7 @@ import { UpdateArticleDto } from './article.dto';
 import { Article } from './article.entity';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { ArticleLikes } from 'src/articleLikes/articleLikes.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aws = require('aws-sdk');
@@ -21,6 +22,8 @@ export class ArticleService {
     private categoriesRepository: Repository<Category>,
     @InjectRepository(ArticlesToUsers)
     private articlesToUsersRepository: Repository<ArticlesToUsers>,
+    @InjectRepository(ArticleLikes)
+    private articleLikesRepository: Repository<ArticleLikes>,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
@@ -30,9 +33,6 @@ export class ArticleService {
     category?: string,
     userId?: string,
   ) {
-    //@ts-ignore
-    console.log('this.request.body', this.request.user);
-    console.log('userId', userId);
     const res = await this.articleRepository.find(
       !category
         ? {
@@ -201,8 +201,6 @@ export class ArticleService {
     const res = await this.articleRepository.findOne({
       where: { id: articleId },
     });
-    console.log(res);
-    console.log(articleId);
     return {
       ...res,
     };
@@ -212,9 +210,19 @@ export class ArticleService {
     const res = await this.articleRepository.findOne({
       where: { publicUrl },
     });
-    await this.addArticleToUser(res.id, userId);
+    const isArticleLikedByUser = await this.articleLikesRepository.findOne({
+      where: {
+        articleId: res.id,
+        userId,
+      },
+    });
+    if (userId) {
+      await this.addArticleToUser(res.id, userId);
+    }
+    console.log('res', res);
     return {
       ...res,
+      isLiked: !!isArticleLikedByUser,
     };
   }
 
@@ -237,30 +245,30 @@ export class ArticleService {
     return res;
   }
 
+  // async uploadFile(file) {
+  //   const bucket = admin.storage().bucket();
+  //   console.log('file', file);
+
+  //   const filename = file.originalname;
+
+  //   await bucket
+  //     .file(filename)
+  //     .save(file.buffer)
+  //     .then(res => console.log(res));
+  //   const bucketFile = bucket.file(filename);
+  //   console.log('uploaded');
+
+  //   const urls = await bucketFile.getSignedUrl({
+  //     action: 'read',
+  //     expires: '03-09-2491',
+  //   });
+
+  //   console.log(`${filename} uploaded.`);
+
+  //   return urls[0];
+  // }
+
   async uploadFile(file) {
-    const bucket = admin.storage().bucket();
-    console.log('file', file);
-
-    const filename = file.originalname;
-
-    await bucket
-      .file(filename)
-      .save(file.buffer)
-      .then(res => console.log(res));
-    const bucketFile = bucket.file(filename);
-    console.log('uploaded');
-
-    const urls = await bucketFile.getSignedUrl({
-      action: 'read',
-      expires: '03-09-2491',
-    });
-
-    console.log(`${filename} uploaded.`);
-
-    return urls[0];
-  }
-
-  /*  async uploadFileWithS3(file) {
     aws.config.update({
       accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
@@ -287,5 +295,5 @@ export class ArticleService {
       .promise();
 
     return uploadedImage.Location;
-  } */
+  }
 }

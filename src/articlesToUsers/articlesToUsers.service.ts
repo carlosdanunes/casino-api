@@ -11,11 +11,14 @@ export class ArticlesToUsersService {
   ) {}
 
   async addArticleToUser(articleId: string, userId: string) {
-    const res = await this.articlesToUsersRepository.save({
-      articleId,
-      userId,
-    });
+    if (userId) {
+      const res = await this.articlesToUsersRepository.save({
+        articleId,
+        userId,
+      });
 
-    return res;
+      return res;
+    }
+    return 'No user';
   }
 }
