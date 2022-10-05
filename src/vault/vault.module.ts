@@ -6,5 +6,6 @@ import { SendTipsModule } from './send-tips/send-tips.module';
 
 @Module({
   imports: [DepositModule, WithdrawModule, ExchangeModule, SendTipsModule],
+  providers: [],
 })
 export class VaultModule {}

@@ -1,4 +1,4 @@
-import Currency from '../../priceService/symbols';
+import Currency from '../../crypto-price/symbols';
 
 export class ResponseFromBinance {
   symbol: Currency;

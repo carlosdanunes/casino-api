@@ -9,19 +9,21 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './users.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserNotExistsGuard } from './users.guard';
 import { Public } from '../decorators/public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiTags('Users')
   @ApiOperation({ summary: 'Get all users' })
   @Post()
   async getAllUsers(
@@ -41,14 +43,19 @@ export class UserController {
     );
   }
 
-  @ApiTags('Users')
+  @ApiOperation({ summary: 'check user existring' })
+  @ApiResponse({ status: HttpStatus.OK, type: Boolean })
+  @Get('/exist')
+  async checkUser(@Query('username') username: string) {
+    return await this.userService.userExists(username);
+  }
+
   @ApiOperation({ summary: 'Get users count' })
   @Get('/count')
   async getUsersCount() {
     return await this.userService.getUsersCount();
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Get single users' })
   @Get(':id')
@@ -56,7 +63,6 @@ export class UserController {
     return await this.userService.getSingleUser(userId);
   }
 
-  @ApiTags('Users')
   @Public()
   @ApiOperation({ summary: `Get single user by username` })
   @Get('/username/:username')
@@ -64,7 +70,6 @@ export class UserController {
     return await this.userService.getSingleUserByUsername(username);
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Update user' })
   @UseInterceptors(FileInterceptor('image'))
@@ -77,7 +82,6 @@ export class UserController {
     return await this.userService.updateUser(userId, updateUserDto, image);
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Update password' })
   @Patch('/password/:id')
@@ -88,7 +92,6 @@ export class UserController {
     return await this.userService.updatePassword(userId, body.password);
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Delete user' })
   @Delete(':id')
@@ -96,7 +99,6 @@ export class UserController {
     return await this.userService.deleteUser(userId);
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Ban User' })
   @Patch('ban/:id')
@@ -115,7 +117,6 @@ export class UserController {
     );
   }
 
-  @ApiTags('Users')
   @UseGuards(UserNotExistsGuard)
   @ApiOperation({ summary: 'Unban User' })
   @Patch('unban/:id')
@@ -123,7 +124,6 @@ export class UserController {
     return await this.userService.unbanUser(userId);
   }
 
-  @ApiTags('Users')
   @ApiOperation({ summary: 'Search user' })
   @Post('/search')
   async searchUser(@Body() body: { searchParam: string }) {

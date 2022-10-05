@@ -5,8 +5,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { PriceService } from '../priceService/price.service';
-import Currency from '../priceService/symbols';
+import { PriceService } from '../crypto-price/price.service';
+import Currency from '../crypto-price/symbols';
 
 @WebSocketGateway({
   cors: {

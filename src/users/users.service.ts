@@ -108,6 +108,12 @@ export class UserService {
     });
   }
 
+  async userExists(username: string) {
+    return {
+      exist: Boolean(await this.usersRepository.count({ where: { username } })),
+    };
+  }
+
   async updateUser(userId: string, userData: UpdateUserDto, image?: any) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     const updatedUserData = {

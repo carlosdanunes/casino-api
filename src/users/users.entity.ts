@@ -47,10 +47,10 @@ export class User {
   @Column({ type: 'boolean', default: false })
   hide_all_data = false;
 
-  @Column({ type: 'varchar', length: 1000 })
+  @Column({ type: 'varchar', length: 1000, default: '' })
   ban_message: string;
 
-  @CreateDateColumn({ nullable: true })
+  @Column({type: 'timestamp', default: null})
   deleted_till: Date;
 
   @CreateDateColumn()

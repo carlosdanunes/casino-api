@@ -5,19 +5,13 @@ export class $npmConfigName1663596248940 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE \`users\` ADD \`ban_message\` varchar(1000) NOT NULL`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE \`users\` ADD \`deleted_till\` datetime NOT NULL`,
+      `ALTER TABLE \`users\` ADD \`deleted_till\` datetime NOT NULL DEFAULT '19000101'`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `ALTER TABLE \`users\` DROP COLUMN \`deleted_till\``,
-    );
-    await queryRunner.query(
-      `ALTER TABLE \`users\` DROP COLUMN \`ban_message\``,
     );
   }
 }
