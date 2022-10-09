@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ForbiddenException, Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { User } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './users.dto';
@@ -119,6 +119,13 @@ export class UserService {
     const updatedUserData = {
       ...userData,
     };
+    if (userData.username !== user.username) {
+      const userWithSameUsername = await this.usersRepository.findOne({where: { username: user.username, id: Not(user.id)}})
+
+      if (userWithSameUsername) {
+        return {error: true, message: 'This login is already taken by another user. Try changing it to another one'}
+      }
+    }
     if (image) {
       const avatarUrl = await this.uploadFileWithS3(image);
       return await this.usersRepository.save({
